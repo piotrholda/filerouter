@@ -1,24 +1,17 @@
 package piotrholda.filerouter;
 
-import org.junit.*;
-import org.junit.rules.TemporaryFolder;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.model.InitializationError;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContextException;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.support.TestPropertySourceUtils;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -56,7 +49,10 @@ public class FileTransferServiceTest {
 
         // when
         original.createNewFile();
-        Thread.sleep(1000);
+        try (Writer writer = new FileWriter(original)) {
+            writer.write("abc");
+        }
+        Thread.sleep(1500);
 
         // then
         assertFalse(original.exists());
@@ -66,7 +62,7 @@ public class FileTransferServiceTest {
 
     @After
     public void cleanUp() {
-copy.delete();
+        copy.delete();
     }
 
 }
